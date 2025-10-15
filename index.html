@@ -1097,14 +1097,14 @@
             winIcon.classList.add('visible');
         }
 
-        // Auto-load sounds from sounds/ folder
+        // Auto-load sounds from samples/ folder
         function loadSounds() {
             let loadedCount = 0;
             const totalSounds = allNotes.length;
 
             allNotes.forEach((note, index) => {
                 const fileName = `${note.index}_${note.name}${note.octave}.mp3`;
-                const filePath = `sounds/${fileName}`;
+                const filePath = `samples/${fileName}`;
 
                 // Create audio element to test if file exists
                 const testAudio = new Audio();
