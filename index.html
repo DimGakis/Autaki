@@ -500,14 +500,13 @@
         .black-keys {
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 584px;
         }
         .black-key-wrapper {
             position: relative;
-            width: 584px;
+            width: 100%;
         }
         .black-key {
             position: absolute;
@@ -1083,7 +1082,7 @@
                 whiteKeysContainer.appendChild(key);
             });
 
-            const blackKeyPositions = ['9.76%', '24.14%', '52.91%', '67.29%', '81.68%'];
+            const blackKeyPositions = [57, 141, 309, 393, 477];
             const blackKeyWrapper = document.createElement('div');
             blackKeyWrapper.className = 'black-key-wrapper';
             blackNotes.forEach((note, idx) => {
@@ -1092,7 +1091,7 @@
                 key.innerHTML = `<div>${noteNames[note.name]}</div>`;
                 key.dataset.note = note.name;
                 key.onclick = () => handleKeyClick(note.name);
-                key.style.left = blackKeyPositions[idx];
+                key.style.left = blackKeyPositions[idx] + 'px';
                 blackKeyWrapper.appendChild(key);
             });
             blackKeysContainer.appendChild(blackKeyWrapper);
