@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Αυτάκι Κουνελάκι</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        .title {
+            text-align: center;
+            color: white;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .game-container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .menu-button {
+            position: absolute;
+            top: -70px;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        .menu-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .menu-button span {
+            width: 30px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .menu-button.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        .menu-button.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-button.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+        .menu-panel {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 9;
+            min-width: 400px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        .menu-panel.show {
+            display: block;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .menu-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #5a3e36;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px;
+            border-radius: 15px;
+        }
+        .control-group {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+        .control-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #5a3e36;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .note-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .note-btn {
+            padding: 10px;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            color: #5a3e36;
+        }
+        .note-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        .note-btn.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-color: #11998e;
+        }
+        .bias-container {
+            padding: 15px 10px 10px;
+        }
+        .bias-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #5a3e36;
+        }
+        .bias-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #f5576c;
+        }
+        .bias-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+        }
+        .bias-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .bias-slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .bias-description {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .range-slider-container {
+            padding: 20px 10px;
+        }
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #5a3e36;
+        }
+        .slider-wrapper {
+            position: relative;
+            height: 40px;
+        }
+        .slider-track {
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            top: 16px;
+        }
+        .slider-active {
+            position: absolute;
+            height: 8px;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            top: 16px;
+        }
+        .range-slider {
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: transparent;
+            -webkit-appearance: none;
+            pointer-events: none;
+            top: 16px;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            pointer-events: auto;
+            border: 4px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        .range-slider::-moz-range-thumb {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            pointer-events: auto;
+            border: 4px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        .octave-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+        .octave-marker {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: bold;
+        }
+        .scores-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .scores {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .score-box {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .score-label {
+            font-size: 1.1em;
+            color: #5a3e36;
+            font-weight: bold;
+        }
+        .score-value {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #f5576c;
+            text-align: center;
+            width: 100%;
+            display: block;
+        }
+        .win-box {
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 170px;
+            height: 170px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .mystery-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: #5a3e36;
+            font-weight: bold;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .mystery-content.hidden {
+            display: none;
+        }
+        .mystery-number {
+            font-size: 0.6em;
+            margin-top: 5px;
+            color: #f5576c;
+        }
+        .win-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            max-width: 150px;
+            max-height: 150px;
+            display: none;
+            animation: revealWin 0.5s ease-in-out;
+        }
+        .win-icon.visible {
+            display: block;
+        }
+        @keyframes revealWin {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) scale(1.2) rotate(180deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+        }
+        .game-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-play {
+            width: 120px;
+            height: 170px;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 18px;
+        }
+        .btn-play .dice-icon {
+            font-size: 2.5em;
+            line-height: 1;
+        }
+        .btn-play .button-text {
+            font-size: 1em;
+            line-height: 1.2;
+        }
+        .btn-play:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .btn-play:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        @keyframes slideIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .piano-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 25px;
+            margin-top: 20px;
+        }
+        .piano-title {
+            text-align: center;
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            padding: 15px;
+            border-radius: 15px;
+        }
+        .piano-title.feedback-success {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            color: #2d5016;
+            animation: slideIn 0.3s;
+        }
+        .piano-title.feedback-error {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #8b0000;
+            animation: slideIn 0.3s;
+        }
+        .piano-title.feedback-info {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #1e3a8a;
+            animation: slideIn 0.3s;
+        }
+        .piano-keyboard {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            height: 250px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .white-keys {
+            display: flex;
+            gap: 4px;
+        }
+        .piano-key {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .white-key {
+            width: 80px;
+            height: 240px;
+            background: linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%);
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 20px;
+            font-size: 1.3em;
+            color: #333;
+        }
+        .white-key:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #fff9c4 0%, #fff59d 100%);
+            transform: translateY(-5px);
+        }
+        .white-key:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+        .white-key.correct {
+            background: linear-gradient(to bottom, #81c784 0%, #66bb6a 100%) !important;
+            animation: pulse 0.5s;
+            transform: scale(1.05);
+        }
+        .white-key.wrong {
+            background: linear-gradient(to bottom, #ff7961 0%, #ff5252 100%) !important;
+            animation: shake 0.5s;
+        }
+        .black-keys {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .black-key-wrapper {
+            position: relative;
+            width: 584px;
+        }
+        .black-key {
+            position: absolute;
+            width: 50px;
+            height: 150px;
+            background: linear-gradient(to bottom, #424242 0%, #212121 100%);
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 15px;
+            font-size: 1.1em;
+            color: white;
+        }
+        .black-key:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #616161 0%, #424242 100%);
+            transform: translateY(-5px);
+        }
+        .black-key:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+        .black-key.correct {
+            background: linear-gradient(to bottom, #81c784 0%, #66bb6a 100%) !important;
+            animation: pulse 0.5s;
+            transform: scale(1.05);
+        }
+        .black-key.wrong {
+            background: linear-gradient(to bottom, #ff7961 0%, #ff5252 100%) !important;
+            animation: shake 0.5s;
+        }
+        .piano-key:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.05); }
+            50% { transform: scale(1.15); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        .loading-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #resetButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        #resetButton:active {
+            transform: translateY(0);
+        }
+
+        /* Tablet screens (768px - 1024px) */
+        @media screen and (max-width: 1024px) {
+            .container {
+                max-width: 100%;
+                padding: 10px;
+            }
+            .title {
+                font-size: 2.5em;
+            }
+            .game-container {
+                padding: 20px;
+            }
+            .menu-panel {
+                min-width: 350px;
+            }
+            .piano-keyboard {
+                transform: scale(0.85);
+                transform-origin: top center;
+            }
+            .scores {
+                gap: 20px;
+            }
+        }
+
+        /* Mobile screens (max 768px) */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .title {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+            .game-container {
+                padding: 15px;
+                border-radius: 20px;
+            }
+            .menu-button {
+                top: -60px;
+                width: 45px;
+                height: 45px;
+            }
+            .menu-panel {
+                min-width: 90%;
+                max-width: 95%;
+                padding: 20px;
+            }
+            .menu-title {
+                font-size: 1.2em;
+                padding: 12px;
+            }
+            .control-group {
+                padding: 15px;
+            }
+            .control-label {
+                font-size: 1em;
+            }
+            .note-selector {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .scores-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            .scores {
+                flex-wrap: wrap;
+                gap: 15px;
+                justify-content: center;
+            }
+            .score-box {
+                height: 140px;
+                padding: 12px 20px;
+                flex: 1;
+                min-width: 120px;
+            }
+            .score-label {
+                font-size: 1em;
+            }
+            .score-value {
+                font-size: 2.8em;
+            }
+            .win-box {
+                width: 140px;
+                height: 140px;
+            }
+            .mystery-content {
+                font-size: 3.2em;
+            }
+            .win-icon {
+                width: 120px;
+                height: 120px;
+                max-width: 120px;
+                max-height: 120px;
+            }
+            .game-buttons {
+                justify-content: center;
+            }
+            .btn-play {
+                width: 140px;
+                height: 140px;
+                font-size: 0.9em;
+            }
+            .btn-play .dice-icon {
+                font-size: 2.2em;
+            }
+            .piano-container {
+                padding: 25px 15px;
+            }
+            .piano-title {
+                font-size: 1.3em;
+                margin-bottom: 20px;
+            }
+            .piano-keyboard {
+                transform: scale(0.65);
+                transform-origin: top center;
+                height: 200px;
+            }
+            .loading-message {
+                font-size: 1em;
+                padding: 15px;
+            }
+        }
+
+        /* Small mobile screens (max 480px) */
+        @media screen and (max-width: 480px) {
+            .title {
+                font-size: 1.6em;
+            }
+            .game-container {
+                padding: 12px;
+            }
+            .menu-panel {
+                min-width: 95%;
+                padding: 15px;
+            }
+            .note-selector {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            .note-btn {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+            .scores {
+                gap: 10px;
+            }
+            .score-box {
+                height: 120px;
+                padding: 10px 15px;
+                min-width: 100px;
+            }
+            .score-label {
+                font-size: 0.9em;
+            }
+            .score-value {
+                font-size: 2.2em;
+            }
+            .win-box {
+                width: 120px;
+                height: 120px;
+            }
+            .mystery-content {
+                font-size: 2.8em;
+            }
+            .win-icon {
+                width: 100px;
+                height: 100px;
+                max-width: 100px;
+                max-height: 100px;
+            }
+            .btn-play {
+                width: 120px;
+                height: 120px;
+                font-size: 0.85em;
+                gap: 12px;
+            }
+            .btn-play .dice-icon {
+                font-size: 2em;
+            }
+            .piano-container {
+                padding: 20px 10px;
+            }
+            .piano-title {
+                font-size: 1.1em;
+                padding: 12px;
+            }
+            .piano-keyboard {
+                transform: scale(0.5);
+                transform-origin: top center;
+                height: 165px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🎵 Αυτάκι Κουνελάκι 🎵</h1>
+        <div class="game-container">
+            <button class="menu-button" id="menuButton">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="menu-panel" id="menuPanel">
+                <div class="menu-title">⚙️ Ρυθμίσεις</div>
+                <div class="control-group">
+                    <label class="control-label">🎯 Εξάσκηση σε Συγκεκριμένες Νότες</label>
+                    <div class="note-selector" id="noteSelector"></div>
+                    <div class="bias-container">
+                        <div class="bias-label">
+                            <span>Ένταση Εστίασης:</span>
+                            <span class="bias-value"><span id="biasValue">0</span>%</span>
+                        </div>
+                        <input type="range" class="bias-slider" id="biasSlider" min="0" max="100" value="0" step="5">
+                        <div class="bias-description">0% = Τυχαία, 100% = Μόνο επιλεγμένες νότες</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">🎼 Επιλογή Οκταβών</label>
+                    <div class="range-slider-container">
+                        <div class="range-labels">
+                            <span>Από: <span id="startOctaveLabel">2</span></span>
+                            <span>Έως: <span id="endOctaveLabel">5</span></span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track"></div>
+                            <div class="slider-active" id="sliderActive"></div>
+                            <input type="range" class="range-slider" id="startSlider" min="-1" max="7" value="2" step="1">
+                            <input type="range" class="range-slider" id="endSlider" min="-1" max="7" value="5" step="1">
+                        </div>
+                        <div class="octave-markers">
+                            <span class="octave-marker">-1</span>
+                            <span class="octave-marker">0</span>
+                            <span class="octave-marker">1</span>
+                            <span class="octave-marker">2</span>
+                            <span class="octave-marker">3</span>
+                            <span class="octave-marker">4</span>
+                            <span class="octave-marker">5</span>
+                            <span class="octave-marker">6</span>
+                            <span class="octave-marker">7</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">⌨️ Παιχνίδι με Πληκτρολόγιο</label>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; font-size: 1.1em; color: #5a3e36; cursor: pointer;">
+                            <input type="checkbox" id="keyboardEnabled" checked style="width: 24px; height: 24px; cursor: pointer;">
+                            <span>Ενεργοποίηση Πληκτρολογίου</span>
+                        </label>
+                    </div>
+                    <div class="bias-container">
+                        <div class="bias-label">
+                            <span>Οκτάβα Πληκτρολογίου:</span>
+                            <span class="bias-value" id="keyboardOctaveValue">4</span>
+                        </div>
+                        <input type="range" class="bias-slider" id="keyboardOctaveSlider" min="-1" max="7" value="4" step="1">
+                        <div class="bias-description">Επιλέξτε ποια οκτάβα θα παίζει το πληκτρολόγιο</div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 10px; font-size: 0.85em; color: #666;">
+                        <strong>Πλήκτρα:</strong><br>
+                        Λευκά: A S D F G H J<br>
+                        Μαύρα: W E T Y U
+                    </div>
+                </div>
+                <div class="control-group">
+                    <button id="resetButton" style="
+                        width: 100%;
+                        padding: 15px;
+                        background: linear-gradient(135deg, #ff7961 0%, #ff5252 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 15px;
+                        font-size: 1.1em;
+                        font-weight: bold;
+                        cursor: pointer;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                        transition: all 0.3s;
+                    ">
+                        🔄 Επαναφορά Ρεκόρ και Κουτιών
+                    </button>
+                </div>
+            </div>
+            <div class="loading-message" id="loadingMessage">⏳ Φόρτωση ήχων... <span id="loadingProgress">0%</span></div>
+            <div class="scores-controls">
+                <div class="scores">
+                    <div class="score-box">
+                        <div class="score-label">⭐ Σκορ</div>
+                        <div class="score-value" id="currentScore">0</div>
+                    </div>
+                    <div class="score-box">
+                        <div class="score-label">🏆 Ρεκόρ</div>
+                        <div class="score-value" id="highScore">0</div>
+                    </div>
+                    <div class="win-box">
+                        <div class="mystery-content" id="mysteryContent50">
+                            <div>🎁</div>
+                            <div class="mystery-number">50</div>
+                        </div>
+                        <img src="icons/win.png" alt="Trophy" class="win-icon" id="winIcon50">
+                    </div>
+                    <div class="win-box">
+                        <div class="mystery-content" id="mysteryContent">
+                            <div>🎁</div>
+                            <div class="mystery-number">100</div>
+                        </div>
+                        <img src="icons/win1.png" alt="Trophy" class="win-icon" id="winIcon">
+                    </div>
+                </div>
+                <div class="game-buttons">
+                    <button class="btn-play" id="playBtn" disabled>
+                        <span class="dice-icon">🎲</span>
+                        <span class="button-text">Παίξε Νότα!</span>
+                    </button>
+                </div>
+            </div>
+            <div class="piano-container">
+                <h2 class="piano-title" id="pianoTitle">🎹 Κάντε κλικ στη Σωστή Νότα! 🎹</h2>
+                <div class="piano-keyboard">
+                    <div class="white-keys" id="whiteKeys"></div>
+                    <div class="black-keys" id="blackKeys"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio id="audio"></audio>
+    <script>
+        const noteNames = {
+            C: 'Ντο', Cs: 'Ντο♯', D: 'Ρε', Ds: 'Ρε♯', 
+            E: 'Μι', F: 'Φα', Fs: 'Φα♯', G: 'Σολ', 
+            Gs: 'Σολ♯', A: 'Λα', As: 'Λα♯', B: 'Σι'
+        };
+
+        const samples = {};
+        let currentScore = 0;
+        let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+        let currentNote = null;
+        let hasAnswered = false;
+        let octaveRangeStart = 2;
+        let octaveRangeEnd = 5;
+        let selectedNotes = new Set();
+        let noteBias = 0;
+        let keyboardEnabled = true;
+        let keyboardOctave = 4;
+        let box50Unlocked = localStorage.getItem('box50Unlocked') === 'true';
+        let box100Unlocked = localStorage.getItem('box100Unlocked') === 'true';
+
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const currentScoreEl = document.getElementById('currentScore');
+        const highScoreEl = document.getElementById('highScore');
+        const startSlider = document.getElementById('startSlider');
+        const endSlider = document.getElementById('endSlider');
+        const sliderActive = document.getElementById('sliderActive');
+        const menuButton = document.getElementById('menuButton');
+        const menuPanel = document.getElementById('menuPanel');
+        const biasSlider = document.getElementById('biasSlider');
+        const biasValue = document.getElementById('biasValue');
+        const keyboardEnabledCheckbox = document.getElementById('keyboardEnabled');
+        const keyboardOctaveSlider = document.getElementById('keyboardOctaveSlider');
+        const keyboardOctaveValue = document.getElementById('keyboardOctaveValue');
+
+        function createNoteSelector() {
+            const container = document.getElementById('noteSelector');
+            container.innerHTML = '';
+            const noteNameKeys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
+            noteNameKeys.forEach(noteName => {
+                const btn = document.createElement('button');
+                btn.className = 'note-btn';
+                btn.dataset.note = noteName;
+                btn.textContent = noteNames[noteName];
+                btn.onclick = () => toggleNoteSelection(noteName, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleNoteSelection(noteName, btn) {
+            if (selectedNotes.has(noteName)) {
+                selectedNotes.delete(noteName);
+                btn.classList.remove('active');
+            } else {
+                selectedNotes.add(noteName);
+                btn.classList.add('active');
+            }
+        }
+
+        biasSlider.addEventListener('input', (e) => {
+            noteBias = parseInt(e.target.value);
+            biasValue.textContent = noteBias;
+        });
+
+        keyboardEnabledCheckbox.addEventListener('change', (e) => {
+            keyboardEnabled = e.target.checked;
+        });
+
+        keyboardOctaveSlider.addEventListener('input', (e) => {
+            keyboardOctave = parseInt(e.target.value);
+            keyboardOctaveValue.textContent = keyboardOctave;
+        });
+
+        document.getElementById('resetButton').addEventListener('click', () => {
+            if (confirm('Είστε σίγουροι ότι θέλετε να επαναφέρετε το ρεκόρ και τα κουτιά; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.')) {
+                // Clear localStorage
+                localStorage.removeItem('highScore');
+                localStorage.removeItem('box50Unlocked');
+                localStorage.removeItem('box100Unlocked');
+
+                // Reset variables
+                highScore = 0;
+                currentScore = 0;
+                box50Unlocked = false;
+                box100Unlocked = false;
+
+                // Update UI
+                highScoreEl.textContent = 0;
+                currentScoreEl.textContent = 0;
+
+                const winIcon = document.getElementById('winIcon');
+                const mysteryContent = document.getElementById('mysteryContent');
+                const winIcon50 = document.getElementById('winIcon50');
+                const mysteryContent50 = document.getElementById('mysteryContent50');
+
+                mysteryContent.classList.remove('hidden');
+                winIcon.classList.remove('visible');
+                mysteryContent50.classList.remove('hidden');
+                winIcon50.classList.remove('visible');
+
+                alert('Η επαναφορά ολοκληρώθηκε επιτυχώς!');
+            }
+        });
+
+        menuButton.addEventListener('click', () => {
+            menuButton.classList.toggle('active');
+            menuPanel.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!menuButton.contains(e.target) && !menuPanel.contains(e.target)) {
+                menuButton.classList.remove('active');
+                menuPanel.classList.remove('show');
+            }
+        });
+
+        const allNotes = [];
+        const baseNoteNames = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
+        let noteIndex = 1;
+
+        allNotes.push({ index: noteIndex++, name: 'A', octave: -1, isBlack: false });
+        allNotes.push({ index: noteIndex++, name: 'As', octave: -1, isBlack: true });
+        allNotes.push({ index: noteIndex++, name: 'B', octave: -1, isBlack: false });
+
+        for (let octave = 0; octave <= 7; octave++) {
+            for (let i = 0; i < baseNoteNames.length; i++) {
+                if (octave === 7 && i > 0) break;
+                const noteName = baseNoteNames[i];
+                const isBlack = noteName.includes('s');
+                allNotes.push({ index: noteIndex++, name: noteName, octave: octave, isBlack: isBlack });
+            }
+        }
+
+        const oneOctaveNotes = [
+            { name: 'C', isBlack: false }, { name: 'Cs', isBlack: true },
+            { name: 'D', isBlack: false }, { name: 'Ds', isBlack: true },
+            { name: 'E', isBlack: false }, { name: 'F', isBlack: false },
+            { name: 'Fs', isBlack: true }, { name: 'G', isBlack: false },
+            { name: 'Gs', isBlack: true }, { name: 'A', isBlack: false },
+            { name: 'As', isBlack: true }, { name: 'B', isBlack: false }
+        ];
+
+        function createPianoKeys() {
+            const whiteKeysContainer = document.getElementById('whiteKeys');
+            const blackKeysContainer = document.getElementById('blackKeys');
+            whiteKeysContainer.innerHTML = '';
+            blackKeysContainer.innerHTML = '';
+
+            const whiteNotes = oneOctaveNotes.filter(n => !n.isBlack);
+            const blackNotes = oneOctaveNotes.filter(n => n.isBlack);
+
+            whiteNotes.forEach(note => {
+                const key = document.createElement('button');
+                key.className = 'piano-key white-key';
+                key.innerHTML = `<div>${noteNames[note.name]}</div>`;
+                key.dataset.note = note.name;
+                key.onclick = () => handleKeyClick(note.name);
+                whiteKeysContainer.appendChild(key);
+            });
+
+            const blackKeyPositions = [57, 141, 309, 393, 477];
+            const blackKeyWrapper = document.createElement('div');
+            blackKeyWrapper.className = 'black-key-wrapper';
+            blackNotes.forEach((note, idx) => {
+                const key = document.createElement('button');
+                key.className = 'piano-key black-key';
+                key.innerHTML = `<div>${noteNames[note.name]}</div>`;
+                key.dataset.note = note.name;
+                key.onclick = () => handleKeyClick(note.name);
+                key.style.left = blackKeyPositions[idx] + 'px';
+                blackKeyWrapper.appendChild(key);
+            });
+            blackKeysContainer.appendChild(blackKeyWrapper);
+        }
+
+        createPianoKeys();
+        createNoteSelector();
+
+        // Restore high score and box states from localStorage
+        highScoreEl.textContent = highScore;
+
+        const winIcon = document.getElementById('winIcon');
+        const mysteryContent = document.getElementById('mysteryContent');
+        const winIcon50 = document.getElementById('winIcon50');
+        const mysteryContent50 = document.getElementById('mysteryContent50');
+
+        if (box50Unlocked) {
+            mysteryContent50.classList.add('hidden');
+            winIcon50.classList.add('visible');
+        }
+
+        if (box100Unlocked) {
+            mysteryContent.classList.add('hidden');
+            winIcon.classList.add('visible');
+        }
+
+        // Auto-load sounds from sounds/ folder
+        function loadSounds() {
+            let loadedCount = 0;
+            const totalSounds = allNotes.length;
+            let failedCount = 0;
+
+            const checkCompletion = () => {
+                if (loadedCount + failedCount >= totalSounds) {
+                    loadingMessage.textContent = `✅ Φορτώθηκαν ${loadedCount} ήχοι! Έτοιμοι για παιχνίδι!`;
+                    loadingMessage.style.background = 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)';
+                    playBtn.disabled = false;
+                    setTimeout(() => loadingMessage.style.display = 'none', 2000);
+                }
+            };
+
+            allNotes.forEach(note => {
+                const fileName = `${note.index}_${note.name}${note.octave}.mp3`;
+                const filePath = `sounds/${fileName}`;
+
+                // Try to load the sound
+                fetch(filePath, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            samples[note.index] = filePath;
+                            loadedCount++;
+                        } else {
+                            failedCount++;
+                        }
+                        const progress = Math.round(((loadedCount + failedCount) / totalSounds) * 100);
+                        loadingProgress.textContent = `${progress}%`;
+                        checkCompletion();
+                    })
+                    .catch(() => {
+                        failedCount++;
+                        const progress = Math.round(((loadedCount + failedCount) / totalSounds) * 100);
+                        loadingProgress.textContent = `${progress}%`;
+                        checkCompletion();
+                    });
+            });
+        }
+
+        // Start loading sounds automatically when page loads
+        loadSounds();
+
+        function updateSliders() {
+            const min = -1, max = 7, range = max - min;
+            const startPercent = ((octaveRangeStart - min) / range) * 100;
+            const endPercent = ((octaveRangeEnd - min) / range) * 100;
+            sliderActive.style.left = startPercent + '%';
+            sliderActive.style.width = (endPercent - startPercent) + '%';
+            document.getElementById('startOctaveLabel').textContent = octaveRangeStart;
+            document.getElementById('endOctaveLabel').textContent = octaveRangeEnd;
+        }
+
+        startSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            if (val <= octaveRangeEnd) {
+                octaveRangeStart = val;
+                updateSliders();
+            }
+        });
+
+        endSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            if (val >= octaveRangeStart) {
+                octaveRangeEnd = val;
+                updateSliders();
+            }
+        });
+
+        updateSliders();
+
+        function selectRandomNoteWithBias(availableNotes) {
+            if (noteBias === 0 || selectedNotes.size === 0) {
+                return availableNotes[Math.floor(Math.random() * availableNotes.length)];
+            }
+            if (noteBias === 100) {
+                const selectedAvailable = availableNotes.filter(note => selectedNotes.has(note.name));
+                if (selectedAvailable.length === 0) {
+                    return availableNotes[Math.floor(Math.random() * availableNotes.length)];
+                }
+                return selectedAvailable[Math.floor(Math.random() * selectedAvailable.length)];
+            }
+            const weightedNotes = [];
+            const biasWeight = 1;
+            const normalWeight = (100 - noteBias) / 100;
+            availableNotes.forEach(note => {
+                const weight = selectedNotes.has(note.name) ? biasWeight : normalWeight;
+                const repeatCount = Math.max(1, Math.round(weight * 10));
+                for (let i = 0; i < repeatCount; i++) {
+                    weightedNotes.push(note);
+                }
+            });
+            return weightedNotes[Math.floor(Math.random() * weightedNotes.length)];
+        }
+
+        function playNote() {
+            // Stop the user's answer note if it's still playing
+            if (lastClickAudio) {
+                lastClickAudio.pause();
+                lastClickAudio.currentTime = 0;
+            }
+
+            if (currentNote && !hasAnswered) {
+                audio.currentTime = 0;
+                audio.play();
+                return;
+            }
+            const availableNotes = allNotes.filter(note =>
+                note.octave >= octaveRangeStart &&
+                note.octave <= octaveRangeEnd &&
+                samples[note.index]
+            );
+            if (availableNotes.length === 0) {
+                showFeedback('error', '😕 Δεν υπάρχουν ήχοι σε αυτό το εύρος οκταβών!');
+                return;
+            }
+            currentNote = selectRandomNoteWithBias(availableNotes);
+            hasAnswered = false;
+            audio.src = samples[currentNote.index];
+            audio.play();
+            hideFeedback();
+            document.querySelectorAll('.piano-key').forEach(key => {
+                key.classList.remove('correct', 'wrong');
+            });
+        }
+
+        let lastClickAudio = null;
+
+        function handleKeyClick(noteName) {
+            // Play the sound when clicking the key only if keyboard is enabled
+            if (keyboardEnabled) {
+                const noteToPlay = allNotes.find(note =>
+                    note.name === noteName &&
+                    note.octave === keyboardOctave
+                );
+                if (noteToPlay && samples[noteToPlay.index]) {
+                    lastClickAudio = new Audio(samples[noteToPlay.index]);
+                    lastClickAudio.play();
+                }
+            }
+
+            if (!currentNote) {
+                showFeedback('error', '🎵 Πατήστε "Παίξε Νότα!" πρώτα!');
+                return;
+            }
+            if (hasAnswered) {
+                showFeedback('info', '🎵 Πατήστε "Παίξε Νότα!" για νέα νότα!');
+                return;
+            }
+            hasAnswered = true;
+            document.querySelectorAll('.piano-key').forEach(key => {
+                key.classList.remove('correct', 'wrong');
+            });
+            const allKeys = document.querySelectorAll('.piano-key');
+            let clickedKey = null;
+            allKeys.forEach(key => {
+                if (key.dataset.note === noteName) clickedKey = key;
+            });
+            if (currentNote.name === noteName) {
+                currentScore++;
+                currentScoreEl.textContent = currentScore;
+                if (currentScore > highScore) {
+                    highScore = currentScore;
+                    highScoreEl.textContent = highScore;
+                    localStorage.setItem('highScore', highScore);
+                }
+                const winIcon = document.getElementById('winIcon');
+                const mysteryContent = document.getElementById('mysteryContent');
+                const winIcon50 = document.getElementById('winIcon50');
+                const mysteryContent50 = document.getElementById('mysteryContent50');
+
+                let delayTime = 1500; // Default delay
+
+                if (currentScore >= 100 && !box100Unlocked) {
+                    mysteryContent.classList.add('hidden');
+                    winIcon.classList.add('visible');
+                    box100Unlocked = true;
+                    localStorage.setItem('box100Unlocked', 'true');
+                    // Play win1.mp3 sound
+                    const win100Sound = new Audio('sounds/win1.mp3');
+                    win100Sound.play();
+                    delayTime = 8000; // 8 second delay for 100 score
+                }
+
+                if (currentScore >= 50 && !box50Unlocked) {
+                    mysteryContent50.classList.add('hidden');
+                    winIcon50.classList.add('visible');
+                    box50Unlocked = true;
+                    localStorage.setItem('box50Unlocked', 'true');
+                    // Play win.mp3 sound
+                    const win50Sound = new Audio('sounds/win.mp3');
+                    win50Sound.play();
+                    delayTime = 6000; // 6 second delay for 50 score
+                }
+                if (clickedKey) clickedKey.classList.add('correct');
+                showFeedback('success', `🎉 Σωστά! Ήταν ${noteNames[currentNote.name]}!`);
+                setTimeout(() => playNote(), delayTime);
+            } else {
+                currentScore = 0;
+                currentScoreEl.textContent = currentScore;
+                if (clickedKey) clickedKey.classList.add('wrong');
+                let correctKey = null;
+                allKeys.forEach(key => {
+                    if (key.dataset.note === currentNote.name) correctKey = key;
+                });
+                if (correctKey) correctKey.classList.add('correct');
+                showFeedback('error', `😢 Ωχ! Ήταν ${noteNames[currentNote.name]}, εσείς επιλέξατε ${noteNames[noteName]}`);
+                setTimeout(() => playNote(), 1500);
+            }
+        }
+
+        function showFeedback(type, message) {
+            const pianoTitle = document.getElementById('pianoTitle');
+            pianoTitle.textContent = message;
+            pianoTitle.className = `piano-title feedback-${type}`;
+        }
+
+        function hideFeedback() {
+            const pianoTitle = document.getElementById('pianoTitle');
+            pianoTitle.textContent = '🎹 Κάντε κλικ στη Σωστή Νότα! 🎹';
+            pianoTitle.className = 'piano-title';
+        }
+
+        // Keyboard mapping: Keys to note names
+        const keyboardMapping = {
+            'a': 'C',  // Ντο
+            'w': 'Cs', // Ντο♯
+            's': 'D',  // Ρε
+            'e': 'Ds', // Ρε♯
+            'd': 'E',  // Μι
+            'f': 'F',  // Φα
+            't': 'Fs', // Φα♯
+            'g': 'G',  // Σολ
+            'y': 'Gs', // Σολ♯
+            'h': 'A',  // Λα
+            'u': 'As', // Λα♯
+            'j': 'B'   // Σι
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (!keyboardEnabled) return;
+
+            const key = e.key.toLowerCase();
+            if (!keyboardMapping[key]) return;
+
+            const noteName = keyboardMapping[key];
+
+            // Call handleKeyClick to register the answer and play the sound
+            handleKeyClick(noteName);
+        });
+
+        playBtn.addEventListener('click', playNote);
+    </script>
+</body>
+</html>
