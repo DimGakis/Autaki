@@ -1101,40 +1101,43 @@
         function loadSounds() {
             let loadedCount = 0;
             const totalSounds = allNotes.length;
-            let failedCount = 0;
 
-            const checkCompletion = () => {
-                if (loadedCount + failedCount >= totalSounds) {
-                    loadingMessage.textContent = `✅ Φορτώθηκαν ${loadedCount} ήχοι! Έτοιμοι για παιχνίδι!`;
-                    loadingMessage.style.background = 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)';
-                    playBtn.disabled = false;
-                    setTimeout(() => loadingMessage.style.display = 'none', 2000);
-                }
-            };
-
-            allNotes.forEach(note => {
+            allNotes.forEach((note, index) => {
                 const fileName = `${note.index}_${note.name}${note.octave}.mp3`;
                 const filePath = `sounds/${fileName}`;
 
-                // Try to load the sound
-                fetch(filePath, { method: 'HEAD' })
-                    .then(response => {
-                        if (response.ok) {
-                            samples[note.index] = filePath;
-                            loadedCount++;
-                        } else {
-                            failedCount++;
-                        }
-                        const progress = Math.round(((loadedCount + failedCount) / totalSounds) * 100);
-                        loadingProgress.textContent = `${progress}%`;
-                        checkCompletion();
-                    })
-                    .catch(() => {
-                        failedCount++;
-                        const progress = Math.round(((loadedCount + failedCount) / totalSounds) * 100);
-                        loadingProgress.textContent = `${progress}%`;
-                        checkCompletion();
-                    });
+                // Create audio element to test if file exists
+                const testAudio = new Audio();
+
+                testAudio.addEventListener('canplaythrough', () => {
+                    samples[note.index] = filePath;
+                    loadedCount++;
+                    const progress = Math.round((loadedCount / totalSounds) * 100);
+                    loadingProgress.textContent = `${progress}%`;
+
+                    if (loadedCount >= totalSounds) {
+                        loadingMessage.textContent = `✅ Φορτώθηκαν ${loadedCount} ήχοι! Έτοιμοι για παιχνίδι!`;
+                        loadingMessage.style.background = 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)';
+                        playBtn.disabled = false;
+                        setTimeout(() => loadingMessage.style.display = 'none', 2000);
+                    }
+                }, { once: true });
+
+                testAudio.addEventListener('error', () => {
+                    console.warn(`Failed to load: ${fileName}`);
+                    loadedCount++;
+                    const progress = Math.round((loadedCount / totalSounds) * 100);
+                    loadingProgress.textContent = `${progress}%`;
+
+                    if (loadedCount >= totalSounds) {
+                        loadingMessage.textContent = `✅ Φορτώθηκαν ${Object.keys(samples).length} ήχοι! Έτοιμοι για παιχνίδι!`;
+                        loadingMessage.style.background = 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)';
+                        playBtn.disabled = false;
+                        setTimeout(() => loadingMessage.style.display = 'none', 2000);
+                    }
+                }, { once: true });
+
+                testAudio.src = filePath;
             });
         }
 
