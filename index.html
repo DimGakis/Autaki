@@ -633,61 +633,82 @@
             }
             .scores-controls {
                 flex-direction: column;
-                align-items: stretch;
+                align-items: center;
                 gap: 15px;
             }
             .scores {
-                flex-wrap: wrap;
-                gap: 15px;
-                justify-content: center;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 10px;
+                width: 100%;
+                max-width: 400px;
             }
             .score-box {
-                height: 140px;
-                padding: 12px 20px;
-                flex: 1;
-                min-width: 120px;
+                height: 120px;
+                padding: 10px 15px;
+                width: 100%;
+            }
+            .score-box:first-child {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            .score-box:nth-child(2) {
+                grid-column: 2;
+                grid-row: 1;
+            }
+            .win-box:nth-child(3) {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            .win-box:nth-child(4) {
+                grid-column: 2;
+                grid-row: 2;
             }
             .score-label {
-                font-size: 1em;
+                font-size: 0.9em;
             }
             .score-value {
-                font-size: 2.8em;
+                font-size: 2.5em;
             }
             .win-box {
-                width: 140px;
-                height: 140px;
+                width: 100%;
+                height: 120px;
             }
             .mystery-content {
-                font-size: 3.2em;
+                font-size: 2.8em;
             }
             .win-icon {
-                width: 120px;
-                height: 120px;
-                max-width: 120px;
-                max-height: 120px;
+                width: 100px;
+                height: 100px;
+                max-width: 100px;
+                max-height: 100px;
             }
             .game-buttons {
                 justify-content: center;
+                width: 100%;
             }
             .btn-play {
-                width: 140px;
-                height: 140px;
+                width: 120px;
+                height: 120px;
                 font-size: 0.9em;
             }
             .btn-play .dice-icon {
-                font-size: 2.2em;
+                font-size: 2em;
             }
             .piano-container {
-                padding: 25px 15px;
+                padding: 20px 10px;
+                overflow-x: hidden;
             }
             .piano-title {
-                font-size: 1.3em;
-                margin-bottom: 20px;
+                font-size: 1.2em;
+                margin-bottom: 15px;
+                padding: 10px;
             }
             .piano-keyboard {
-                transform: scale(0.65);
+                transform: scale(0.55);
                 transform-origin: top center;
-                height: 200px;
+                height: 165px;
             }
             .loading-message {
                 font-size: 1em;
@@ -698,10 +719,10 @@
         /* Small mobile screens (max 480px) */
         @media screen and (max-width: 480px) {
             .title {
-                font-size: 1.6em;
+                font-size: 1.5em;
             }
             .game-container {
-                padding: 12px;
+                padding: 10px;
             }
             .menu-panel {
                 min-width: 95%;
@@ -716,52 +737,53 @@
                 font-size: 0.9em;
             }
             .scores {
-                gap: 10px;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                max-width: 350px;
             }
             .score-box {
-                height: 120px;
-                padding: 10px 15px;
-                min-width: 100px;
+                height: 100px;
+                padding: 8px 12px;
             }
             .score-label {
-                font-size: 0.9em;
+                font-size: 0.85em;
             }
             .score-value {
-                font-size: 2.2em;
-            }
-            .win-box {
-                width: 120px;
-                height: 120px;
-            }
-            .mystery-content {
-                font-size: 2.8em;
-            }
-            .win-icon {
-                width: 100px;
-                height: 100px;
-                max-width: 100px;
-                max-height: 100px;
-            }
-            .btn-play {
-                width: 120px;
-                height: 120px;
-                font-size: 0.85em;
-                gap: 12px;
-            }
-            .btn-play .dice-icon {
                 font-size: 2em;
             }
+            .win-box {
+                width: 100%;
+                height: 100px;
+            }
+            .mystery-content {
+                font-size: 2.2em;
+            }
+            .win-icon {
+                width: 80px;
+                height: 80px;
+                max-width: 80px;
+                max-height: 80px;
+            }
+            .btn-play {
+                width: 100px;
+                height: 100px;
+                font-size: 0.8em;
+                gap: 10px;
+            }
+            .btn-play .dice-icon {
+                font-size: 1.8em;
+            }
             .piano-container {
-                padding: 20px 10px;
+                padding: 15px 5px;
             }
             .piano-title {
-                font-size: 1.1em;
-                padding: 12px;
+                font-size: 1em;
+                padding: 10px;
             }
             .piano-keyboard {
-                transform: scale(0.5);
+                transform: scale(0.45);
                 transform-origin: top center;
-                height: 165px;
+                height: 140px;
             }
         }
     </style>
