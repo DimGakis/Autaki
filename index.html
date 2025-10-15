@@ -46,17 +46,17 @@
             position: absolute;
             top: -70px;
             right: 0;
-            width: 50px;
-            height: 50px;
+            width: 42px;
+            height: 42px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transition: all 0.3s;
             z-index: 10;
@@ -66,8 +66,8 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         .menu-button span {
-            width: 30px;
-            height: 4px;
+            width: 24px;
+            height: 3px;
             background: white;
             border-radius: 2px;
             transition: all 0.3s;
@@ -1030,7 +1030,7 @@
                 </div>
             </div>
             <div class="piano-container">
-                <h2 class="piano-title" id="pianoTitle">🎹 Κάντε κλικ στη Σωστή Νότα! 🎹</h2>
+                <h2 class="piano-title" id="pianoTitle">🎹 Κάνε κλικ τη σωστή νότα! 🎹</h2>
                 <div class="piano-keyboard">
                     <div class="white-keys" id="whiteKeys"></div>
                     <div class="black-keys" id="blackKeys"></div>
@@ -1384,11 +1384,11 @@
             }
 
             if (!currentNote) {
-                showFeedback('error', '🎵 Πατήστε "Παίξε Νότα!" πρώτα!');
+                showFeedback('error', '🎵 Πάτα "Παίξε Νότα!" πρώτα!');
                 return;
             }
             if (hasAnswered) {
-                showFeedback('info', '🎵 Πατήστε "Παίξε Νότα!" για νέα νότα!');
+                showFeedback('info', '🎵 Πάτα "Παίξε Νότα!" για νέα νότα!');
                 return;
             }
             hasAnswered = true;
@@ -1448,7 +1448,7 @@
                     if (key.dataset.note === currentNote.name) correctKey = key;
                 });
                 if (correctKey) correctKey.classList.add('correct');
-                showFeedback('error', `😢 Ωχ! Ήταν ${noteNames[currentNote.name]}, εσείς επιλέξατε ${noteNames[noteName]}`);
+                showFeedback('error', `😢 Ωχ! Ήταν ${noteNames[currentNote.name]}, πάτησες ${noteNames[noteName]}`);
                 setTimeout(() => playNote(), 1500);
             }
         }
