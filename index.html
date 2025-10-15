@@ -1083,7 +1083,7 @@
                 whiteKeysContainer.appendChild(key);
             });
 
-            const blackKeyPositions = [57, 141, 309, 393, 477];
+            const blackKeyPositions = ['9.76%', '24.14%', '52.91%', '67.29%', '81.68%'];
             const blackKeyWrapper = document.createElement('div');
             blackKeyWrapper.className = 'black-key-wrapper';
             blackNotes.forEach((note, idx) => {
@@ -1092,7 +1092,7 @@
                 key.innerHTML = `<div>${noteNames[note.name]}</div>`;
                 key.dataset.note = note.name;
                 key.onclick = () => handleKeyClick(note.name);
-                key.style.left = blackKeyPositions[idx] + 'px';
+                key.style.left = blackKeyPositions[idx];
                 blackKeyWrapper.appendChild(key);
             });
             blackKeysContainer.appendChild(blackKeyWrapper);
